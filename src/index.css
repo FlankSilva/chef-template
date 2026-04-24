@@ -128,4 +128,71 @@
   .article-prose a {
     @apply text-accent font-semibold underline-offset-4 hover:underline;
   }
+
+  /* Links dentro de cards de produto: o bloco .article-prose a herdava cor accent no botão e no thumb. */
+  .article-prose a.article-product-cta {
+    color: #fff !important;
+    text-decoration: none !important;
+  }
+  .article-prose a.article-product-cta:hover {
+    color: #fff !important;
+    text-decoration: none !important;
+  }
+  .article-prose a.article-product-card-media {
+    color: inherit;
+    text-decoration: none !important;
+  }
+  .article-prose a.article-product-card-media:hover {
+    text-decoration: none !important;
+  }
+
+  /* FAB afiliado: centralizado na base da viewport (JS alterna .is-visible). */
+  #affiliate-float-bar {
+    position: fixed;
+    z-index: 60;
+    left: 50%;
+    right: auto;
+    bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+    top: auto;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    transform: translate3d(-50%, 0.75rem, 0) scale(0.96);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      transform 220ms cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 220ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  #affiliate-float-bar.is-visible {
+    transform: translate3d(-50%, 0, 0) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  @keyframes affiliate-fab-bob {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+
+  #affiliate-float-bar.is-visible #affiliate-float-link {
+    animation: affiliate-fab-bob 2.6s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #affiliate-float-bar.is-visible #affiliate-float-link {
+      animation: none;
+    }
+  }
 }

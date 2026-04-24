@@ -7,6 +7,11 @@ const KNIVES_IMAGE = '/src/assets/post-knives.jpg';
 const MIXER_IMAGE = '/src/assets/post-mixer.jpg';
 const AIRFRYER_IMAGE = '/src/assets/post-airfryer.jpg';
 
+/** Ilustrações locais para cards de produto (SVG em /public). */
+const PRODUCT_CARD_IMAGE_KNIVES = '/public/images/card-facas.svg';
+const PRODUCT_CARD_IMAGE_MIXER = '/public/images/card-mixer.svg';
+const PRODUCT_CARD_IMAGE_AIRFRYER = '/public/images/card-airfryer.svg';
+
 /** @var list<string> */
 $categories = ['Facas', 'Eletroportáteis', 'Panelas', 'Cafeteiras', 'Liquidificadores', 'Utensílios'];
 
@@ -34,6 +39,7 @@ $posts = [
             [
                 'slug' => 'tramontina-century-8',
                 'name' => 'Tramontina Century 8"',
+                'image' => PRODUCT_CARD_IMAGE_KNIVES,
                 'price' => 'R$ 489',
                 'rating' => 4.8,
                 'pros' => ['Ótima retenção', 'Cabo ergonômico'],
@@ -44,6 +50,7 @@ $posts = [
             [
                 'slug' => 'mundial-premium-forged',
                 'name' => 'Mundial Premium Forged',
+                'image' => PRODUCT_CARD_IMAGE_KNIVES,
                 'price' => 'R$ 329',
                 'rating' => 4.6,
                 'pros' => ['Bom equilíbrio', 'Ótimo custo-benefício'],
@@ -73,6 +80,7 @@ $posts = [
             [
                 'slug' => 'kitchenaid-artisan-48l',
                 'name' => 'KitchenAid Artisan 4.8L',
+                'image' => PRODUCT_CARD_IMAGE_MIXER,
                 'price' => 'R$ 4.299',
                 'rating' => 4.9,
                 'pros' => ['Construção em metal', 'Alta durabilidade'],
@@ -83,6 +91,7 @@ $posts = [
             [
                 'slug' => 'mondial-premium-plus',
                 'name' => 'Mondial Premium Plus',
+                'image' => PRODUCT_CARD_IMAGE_MIXER,
                 'price' => 'R$ 699',
                 'rating' => 4.3,
                 'pros' => ['Custo-benefício', 'Boa para uso ocasional'],
@@ -112,6 +121,7 @@ $posts = [
             [
                 'slug' => 'mondial-family-af-31',
                 'name' => 'Mondial Family AF-31',
+                'image' => PRODUCT_CARD_IMAGE_AIRFRYER,
                 'price' => 'R$ 379',
                 'rating' => 4.5,
                 'pros' => ['4L de capacidade', 'Painel digital'],
@@ -122,6 +132,7 @@ $posts = [
             [
                 'slug' => 'philips-walita-daily',
                 'name' => 'Philips Walita Daily',
+                'image' => PRODUCT_CARD_IMAGE_AIRFRYER,
                 'price' => 'R$ 499',
                 'rating' => 4.7,
                 'pros' => ['Silenciosa', 'Boa uniformidade'],
@@ -190,4 +201,26 @@ function get_product_by_slugs(array $posts, string $postSlug, string $productSlu
 function product_page_path(string $postSlug, string $productSlug): string
 {
     return '/produto/' . rawurlencode($postSlug) . '/' . rawurlencode($productSlug);
+}
+
+/**
+ * Posts do blog para exibir na ficha do produto: mesma categoria primeiro, depois os demais.
+ *
+ * @param list<array<string, mixed>> $posts
+ * @return list<array<string, mixed>>
+ */
+function related_posts_for_product(array $posts, string $excludePostSlug, string $category, int $limit = 3): array
+{
+    $others = array_values(array_filter(
+        $posts,
+        static fn(array $p): bool => ($p['slug'] ?? '') !== $excludePostSlug
+    ));
+    usort($others, static function (array $a, array $b) use ($category): int {
+        $aMatch = (($a['category'] ?? '') === $category) ? 0 : 1;
+        $bMatch = (($b['category'] ?? '') === $category) ? 0 : 1;
+
+        return $aMatch <=> $bMatch;
+    });
+
+    return array_slice($others, 0, $limit);
 }

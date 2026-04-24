@@ -4,8 +4,12 @@
 /** @var list<string> $categories */
 /** @var array<string, mixed> $post */
 /** @var array<string, mixed> $product */
+/** @var list<array<string, mixed>> $relatedPosts */
+$relatedPosts = $relatedPosts ?? [];
 $rating = (float) ($product['rating'] ?? 0);
 $rounded = (int) round($rating);
+$affiliateHref = (string) ($product['affiliateUrl'] ?? '#');
+$affiliateIsExternal = str_starts_with($affiliateHref, 'http://') || str_starts_with($affiliateHref, 'https://');
 
 view('partials/head.php', compact('title'));
 view('partials/header.php', ['path' => $requestPath, 'categories' => $categories]);
@@ -41,7 +45,7 @@ view('partials/header.php', ['path' => $requestPath, 'categories' => $categories
                         <span class="rounded-full bg-primary-foreground/10 px-3 py-1 text-xs font-bold"><?= h((string) $product['price']) ?></span>
                     </div>
                     <div class="mt-8 flex flex-wrap gap-3">
-                        <a href="<?= h((string) $product['affiliateUrl']) ?>" class="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-accent px-8 py-3.5 text-sm font-bold text-accent-foreground shadow-lg-soft hover:-translate-y-0.5 transition-transform">Ver oferta</a>
+                        <a href="<?= h($affiliateHref) ?>" class="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-accent px-8 py-3.5 text-sm font-bold !text-white text-white shadow-lg-soft ring-1 ring-black/10 hover:-translate-y-0.5 hover:!text-white hover:no-underline transition-transform"<?= $affiliateIsExternal ? ' target="_blank" rel="noopener noreferrer sponsored"' : '' ?>>Ver oferta</a>
                         <a href="/blog/<?= h((string) $post['slug']) ?>" class="inline-flex items-center justify-center gap-2 rounded-full border border-primary-foreground/30 px-8 py-3.5 text-sm font-semibold text-primary-foreground hover:bg-primary-foreground/10 transition-colors">Ver review completa</a>
                         <button type="button" class="share-article-btn inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 px-6 py-3.5 text-sm font-semibold hover:border-accent hover:text-accent transition-colors" data-share-title="<?= h((string) $product['name']) ?>">
                             Compartilhar
@@ -59,20 +63,39 @@ view('partials/header.php', ['path' => $requestPath, 'categories' => $categories
     </section>
 
     <section class="container-page -mt-6 md:-mt-10 relative z-10 mb-12">
-        <div class="grid gap-6 lg:grid-cols-2 max-w-6xl mx-auto items-start">
-            <div class="aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-muted shadow-lg-soft">
-                <img src="<?= h((string) $product['image']) ?>" alt="<?= h((string) $product['name']) ?>" class="h-full w-full object-cover" width="1200" height="900">
+        <div class="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(280px,22rem)] lg:items-stretch">
+            <div class="aspect-[4/3] min-h-[220px] overflow-hidden rounded-2xl border border-border bg-muted shadow-lg-soft lg:aspect-auto lg:min-h-[360px]">
+                <img src="<?= h((string) $product['image']) ?>" alt="<?= h((string) $product['name']) ?>" class="h-full w-full object-cover object-center" width="1200" height="900">
             </div>
-            <div class="lg:hidden rounded-2xl border border-border bg-card p-6 shadow-sm-soft">
-                <p class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Resumo</p>
-                <p class="mt-2 text-sm text-foreground/90 leading-relaxed"><?= h((string) ($product['description'] ?? '')) ?></p>
-            </div>
+            <a id="product-affiliate-card" href="<?= h($affiliateHref) ?>" class="product-affiliate-card group flex flex-col rounded-2xl border-2 border-border bg-card p-6 shadow-md-soft transition-all hover:-translate-y-0.5 hover:border-accent/35 hover:shadow-lg-soft md:p-8 no-underline"<?= $affiliateIsExternal ? ' target="_blank" rel="noopener noreferrer sponsored"' : '' ?> aria-label="Ver oferta: <?= h((string) $product['name']) ?> — abre o parceiro">
+                <p class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Preço referência</p>
+                <p class="mt-2 font-display text-3xl font-black tracking-tight text-accent md:text-4xl"><?= h((string) $product['price']) ?></p>
+                <p class="mt-2 text-xs leading-relaxed text-muted-foreground">Valores podem mudar no varejo — confira no parceiro.</p>
+                <?php if (($product['description'] ?? '') !== ''): ?>
+                    <p class="mt-5 border-t border-border pt-5 text-sm leading-relaxed text-foreground/85"><?= h((string) $product['description']) ?></p>
+                <?php endif; ?>
+                <div class="mt-6 flex-1 border-t border-border pt-6">
+                    <p class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Características</p>
+                    <ul class="mt-3 space-y-2.5">
+                        <?php foreach ($product['pros'] as $pro): ?>
+                            <li class="flex gap-2.5 text-sm text-foreground/90">
+                                <span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-success/15 text-xs font-bold text-success" aria-hidden="true">✓</span>
+                                <span><?= h((string) $pro) ?></span>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+                <p class="mt-8 flex items-center gap-2 text-sm font-bold text-accent group-hover:underline">
+                    Ir para a loja parceira
+                    <svg class="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </p>
+            </a>
         </div>
     </section>
 
     <section class="container-page pb-20">
-        <div class="grid lg:grid-cols-[1fr_300px] gap-12 max-w-6xl mx-auto">
-            <div class="space-y-10">
+        <div class="grid max-w-6xl grid-cols-1 items-start gap-12 lg:grid-cols-[1fr_300px] mx-auto">
+            <div class="relative z-10 min-w-0 space-y-10">
                 <article class="article-prose max-w-none">
                     <h2 class="not-prose font-display font-black text-2xl md:text-3xl">Nossa análise</h2>
                     <p><?= h((string) ($product['description'] ?? '')) ?> Resultado integrado ao comparativo <strong><?= h((string) $post['title']) ?></strong>.</p>
@@ -110,20 +133,35 @@ view('partials/header.php', ['path' => $requestPath, 'categories' => $categories
                 </div>
             </div>
 
-            <aside class="space-y-6">
-                <div class="rounded-2xl border border-border bg-card p-6 shadow-sm-soft lg:sticky lg:top-24">
-                    <p class="text-xs uppercase tracking-wider font-bold text-muted-foreground">Preço exibido</p>
-                    <p class="mt-2 font-display font-black text-3xl text-accent"><?= h((string) $product['price']) ?></p>
-                    <p class="mt-2 text-xs text-muted-foreground">Valores podem mudar no varejo — confira no parceiro.</p>
-                    <a href="/blog/<?= h((string) $post['slug']) ?>" class="mt-6 block text-center text-sm font-semibold text-muted-foreground hover:text-accent transition-colors">Ler review no blog →</a>
-                </div>
-                <div class="rounded-2xl bg-primary text-primary-foreground p-6">
-                    <span class="eyebrow text-highlight">Contexto</span>
-                    <p class="mt-2 text-sm leading-relaxed text-primary-foreground/85">Este produto faz parte do guia <strong class="text-primary-foreground"><?= h((string) $post['title']) ?></strong>.</p>
+            <aside class="relative z-0 min-w-0 w-full lg:w-auto">
+                <div class="lg:sticky lg:top-24">
+                    <div class="rounded-2xl bg-primary text-primary-foreground p-6">
+                        <span class="eyebrow text-highlight">Contexto</span>
+                        <p class="mt-2 text-sm leading-relaxed text-primary-foreground/85">Este produto faz parte do guia <strong class="text-primary-foreground"><?= h((string) $post['title']) ?></strong>.</p>
+                    </div>
                 </div>
             </aside>
         </div>
     </section>
+
+    <div id="affiliate-float-bar" role="region" aria-label="Atalho para loja parceira" aria-hidden="true">
+        <a id="affiliate-float-link" href="<?= h($affiliateHref) ?>" class="inline-flex max-w-[calc(100vw-2rem)] items-center gap-1.5 rounded-full bg-gradient-accent py-1.5 pl-1.5 pr-2.5 text-[11px] font-bold leading-tight text-white shadow-lg-soft ring-1 ring-black/15 no-underline transition-[filter,transform,box-shadow] hover:brightness-105 hover:shadow-md active:scale-[0.97] sm:gap-2 sm:pr-3 sm:text-xs" aria-label="Ir para a loja parceira" title="Ir para a loja parceira"<?= $affiliateIsExternal ? ' target="_blank" rel="noopener noreferrer sponsored"' : '' ?>>
+            <span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-black/12 text-white sm:h-7 sm:w-7" aria-hidden="true">
+                <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            </span>
+            <span class="whitespace-nowrap pr-0.5 font-semibold tracking-tight">Loja parceira</span>
+        </a>
+    </div>
+
+    <?php if ($relatedPosts !== []): ?>
+        <section class="container-page border-t border-border py-14 md:py-16">
+            <h2 class="font-display text-2xl font-black tracking-tight text-foreground md:text-3xl">Artigos relacionados</h2>
+            <p class="mt-2 max-w-2xl text-sm text-muted-foreground">Outros reviews e guias que podem interessar quem pesquisa este tipo de equipamento.</p>
+            <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"><?php foreach ($relatedPosts as $rp) {
+                view('components/post-card.php', ['post' => $rp, 'variant' => 'default']);
+            } ?></div>
+        </section>
+    <?php endif; ?>
 
     <?php view('partials/newsletter.php'); ?>
     <?php view('partials/footer.php', compact('categories')); ?>

@@ -40,7 +40,8 @@ if (preg_match('#^/produto/([^/]+)/([^/]+)$#', $requestPath, $prodMatch) === 1) 
         $post = $resolved['post'];
         $product = $resolved['product'];
         $title = $product['name'] . ' — Achados do Chef';
-        view('pages/product.php', compact('title', 'requestPath', 'categories', 'post', 'product'));
+        $relatedPosts = related_posts_for_product($posts, (string) $post['slug'], (string) $product['category']);
+        view('pages/product.php', compact('title', 'requestPath', 'categories', 'post', 'product', 'relatedPosts'));
         exit;
     }
 }

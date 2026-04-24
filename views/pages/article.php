@@ -68,14 +68,43 @@ view('partials/header.php', ['path' => '/blog', 'categories' => $categories]);
                     </section>
                 <?php endforeach; ?>
                 <h2 class="mt-12">Veja os produtos avaliados</h2>
-                <div class="not-prose mt-6 space-y-8">
+                <div class="not-prose mt-6 space-y-6">
                     <?php foreach ($post['products'] as $index => $product): ?>
-                        <?php $detailHref = product_page_path((string) $post['slug'], (string) $product['slug']); ?>
-                        <article class="relative rounded-2xl border border-border bg-card p-6 md:p-8 shadow-sm-soft">
-                            <span class="absolute -top-4 left-6 grid h-10 w-10 place-items-center rounded-full bg-accent text-accent-foreground font-black text-base shadow-md-soft"><?= h((string) ((int) $index + 1)) ?>º</span>
-                            <h3 class="font-display font-bold text-xl md:text-2xl"><a href="<?= h($detailHref) ?>" class="hover:text-accent transition-colors"><?= h((string) $product['name']) ?></a></h3>
-                            <p class="text-accent font-black text-2xl mt-2"><?= h((string) $product['price']) ?></p>
-                            <a href="<?= h($detailHref) ?>" class="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-gradient-accent px-6 py-3 font-bold text-accent-foreground shadow-md-soft hover:-translate-y-0.5 transition-transform">Ver produto</a>
+                        <?php
+                        $detailHref = product_page_path((string) $post['slug'], (string) $product['slug']);
+                        $productImage = (string) ($product['image'] ?? $post['cover']);
+                        $rating = isset($product['rating']) ? (float) $product['rating'] : null;
+                        ?>
+                        <article class="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-md-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg-soft sm:flex-row sm:items-stretch">
+                            <a href="<?= h($detailHref) ?>" class="article-product-card-media relative block aspect-[16/10] shrink-0 overflow-hidden bg-muted no-underline sm:aspect-auto sm:w-[42%] sm:max-w-md sm:min-h-[220px]" aria-label="Ver página do produto: <?= h((string) $product['name']) ?>">
+                                <span class="absolute left-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-full bg-accent font-display text-base font-black text-white shadow-lg ring-2 ring-card"><?= h((string) ((int) $index + 1)) ?>º</span>
+                                <img src="<?= h($productImage) ?>" alt="" class="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105" width="720" height="450" loading="lazy" decoding="async">
+                                <span class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
+                            </a>
+                            <div class="flex min-w-0 flex-1 flex-col justify-center gap-4 p-6 sm:p-8">
+                                <div>
+                                    <h3 class="font-display text-xl font-bold leading-snug text-foreground sm:text-2xl">
+                                        <a href="<?= h($detailHref) ?>" class="transition-colors hover:text-accent"><?= h((string) $product['name']) ?></a>
+                                    </h3>
+                                    <?php if ($rating !== null): ?>
+                                        <p class="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
+                                            <span class="inline-flex items-center gap-0.5 font-semibold text-amber-600 dark:text-amber-400" aria-label="Nota <?= h((string) $rating) ?> de 5">
+                                                <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                                                <?= h(number_format($rating, 1, ',', '.')) ?>
+                                            </span>
+                                            <span class="text-muted-foreground/80">na nossa avaliação</span>
+                                        </p>
+                                    <?php endif; ?>
+                                    <p class="mt-3">
+                                        <span class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Preço referência</span><br>
+                                        <span class="font-display text-2xl font-black tracking-tight text-accent sm:text-3xl"><?= h((string) $product['price']) ?></span>
+                                    </p>
+                                </div>
+                                <a href="<?= h($detailHref) ?>" class="article-product-cta inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-accent px-6 py-3.5 text-sm font-bold !text-white shadow-md-soft ring-1 ring-black/10 transition-transform hover:-translate-y-0.5 hover:!text-white hover:brightness-105 hover:no-underline sm:w-auto sm:self-start">
+                                    Ver produto
+                                    <svg class="h-4 w-4 shrink-0 text-white opacity-95" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                </a>
+                            </div>
                         </article>
                     <?php endforeach; ?>
                 </div>
