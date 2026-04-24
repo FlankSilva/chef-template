@@ -3271,6 +3271,10 @@ h1, h2, h3, h4, h5, h6 {
     grid-template-columns: 1fr 280px;
   }
 
+  .lg\:grid-cols-5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
   .lg\:py-28 {
     padding-top: 7rem;
     padding-bottom: 7rem;
