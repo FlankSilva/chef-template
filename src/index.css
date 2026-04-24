@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Achados do Chef — Design System
+   Modern, clean magazine style. All colors HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 220 15% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 15% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 15% 12%;
+
+    /* Brand: deep near-black + tomato accent */
+    --primary: 220 18% 10%;
+    --primary-foreground: 0 0% 100%;
+
+    --accent: 8 78% 52%;
+    --accent-foreground: 0 0% 100%;
+
+    --secondary: 40 30% 96%;
+    --secondary-foreground: 220 15% 12%;
+
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 8% 42%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 8 78% 52%;
+
+    --radius: 0.75rem;
+
+    /* Editorial extras */
+    --highlight: 48 96% 60%;        /* yellow underline / badges */
+    --success: 142 60% 42%;
+    --surface: 220 20% 98%;
+
+    --gradient-hero: linear-gradient(135deg, hsl(220 18% 10%) 0%, hsl(220 18% 18%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(8 78% 52%) 0%, hsl(18 88% 58%) 100%);
+    --gradient-fade: linear-gradient(180deg, hsl(0 0% 100% / 0) 0%, hsl(220 18% 10% / 0.85) 100%);
+
+    --shadow-sm: 0 1px 2px hsl(220 18% 10% / 0.06);
+    --shadow-md: 0 6px 24px -8px hsl(220 18% 10% / 0.15);
+    --shadow-lg: 0 24px 48px -16px hsl(220 18% 10% / 0.25);
+
+    --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark {
+    --background: 220 18% 8%;
+    --foreground: 0 0% 98%;
+    --card: 220 18% 11%;
+    --card-foreground: 0 0% 98%;
+    --popover: 220 18% 11%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 220 18% 10%;
+    --accent: 8 78% 56%;
+    --accent-foreground: 0 0% 100%;
+    --secondary: 220 14% 16%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 220 14% 16%;
+    --muted-foreground: 220 8% 65%;
+    --border: 220 14% 18%;
+    --input: 220 14% 18%;
+    --ring: 8 78% 56%;
+    --surface: 220 18% 11%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-accent;
+  }
+
+  .link-underline {
+    @apply relative inline-block after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:w-0 after:bg-accent after:transition-all after:duration-300 hover:after:w-full;
+  }
+
+  .article-prose {
+    @apply max-w-none text-foreground/90 leading-relaxed;
+  }
+  .article-prose p {
+    @apply mb-5 text-[1.0625rem] leading-[1.75];
+  }
+  .article-prose h2 {
+    @apply mt-12 mb-4 text-3xl font-bold;
+  }
+  .article-prose h3 {
+    @apply mt-8 mb-3 text-2xl font-bold;
+  }
+  .article-prose ul {
+    @apply mb-5 ml-5 list-disc space-y-2;
+  }
+  .article-prose a {
+    @apply text-accent font-semibold underline-offset-4 hover:underline;
+  }
+}
