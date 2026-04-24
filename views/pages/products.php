@@ -41,13 +41,14 @@ view('partials/header.php', ['path' => $requestPath, 'categories' => $categories
         <p class="text-sm text-muted-foreground mb-6"><?= h((string) count($list)) ?> produtos encontrados</p>
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <?php foreach ($list as $product): ?>
+                <?php $detailHref = product_page_path((string) $product['postSlug'], (string) $product['slug']); ?>
                 <article class="group flex flex-col rounded-2xl border border-border bg-card overflow-hidden shadow-sm-soft hover:shadow-lg-soft hover:-translate-y-1 transition-all">
-                    <a href="/blog/<?= h((string) $product['postSlug']) ?>" class="block aspect-[4/3] overflow-hidden bg-muted"><img src="<?= h((string) $product['image']) ?>" alt="<?= h((string) $product['name']) ?>" class="h-full w-full object-cover"></a>
+                    <a href="<?= h($detailHref) ?>" class="block aspect-[4/3] overflow-hidden bg-muted"><img src="<?= h((string) $product['image']) ?>" alt="<?= h((string) $product['name']) ?>" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"></a>
                     <div class="p-5 flex flex-col flex-1">
                         <span class="eyebrow text-xs"><?= h((string) $product['category']) ?></span>
-                        <h3 class="mt-2 font-display font-bold text-lg leading-tight"><?= h((string) $product['name']) ?></h3>
+                        <h3 class="mt-2 font-display font-bold text-lg leading-tight"><a href="<?= h($detailHref) ?>" class="hover:text-accent transition-colors"><?= h((string) $product['name']) ?></a></h3>
                         <p class="mt-3 text-accent font-black text-xl"><?= h((string) $product['price']) ?></p>
-                        <a href="<?= h((string) $product['affiliateUrl']) ?>" class="mt-auto rounded-full bg-gradient-accent px-4 py-2 text-xs text-center font-bold text-accent-foreground">Ver oferta</a>
+                        <a href="<?= h($detailHref) ?>" class="mt-auto rounded-full bg-gradient-accent px-4 py-3 text-center text-sm font-bold text-accent-foreground shadow-md-soft hover:-translate-y-0.5 transition-transform">Ver produto</a>
                     </div>
                 </article>
             <?php endforeach; ?>

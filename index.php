@@ -34,6 +34,17 @@ if ($requestPath === '/blog') {
     exit;
 }
 
+if (preg_match('#^/produto/([^/]+)/([^/]+)$#', $requestPath, $prodMatch) === 1) {
+    $resolved = get_product_by_slugs($posts, $prodMatch[1], $prodMatch[2]);
+    if ($resolved !== null) {
+        $post = $resolved['post'];
+        $product = $resolved['product'];
+        $title = $product['name'] . ' — Achados do Chef';
+        view('pages/product.php', compact('title', 'requestPath', 'categories', 'post', 'product'));
+        exit;
+    }
+}
+
 if ($requestPath === '/produtos') {
     $title = 'Produtos — Achados do Chef';
     $list = all_products($posts);

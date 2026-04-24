@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "scripts": {
     "wind": "tailwindcss -i ./src/index.css -o ./src/tailwind.css --watch",
-    "wind:build": "tailwindcss -i ./src/index.css -o ./src/tailwind.css --minify"
+    "wind:build": "tailwindcss -i ./src/index.css -o ./src/tailwind.css --minify",
+    "dev": "php -S localhost:8003"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",

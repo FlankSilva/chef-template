@@ -14,7 +14,7 @@
         <nav class="hidden lg:flex items-center gap-7 text-sm font-semibold">
             <a href="/" class="link-underline <?= $path === '/' ? 'text-accent' : '' ?>">Home</a>
             <a href="/blog" class="link-underline <?= str_starts_with($path, '/blog') ? 'text-accent' : '' ?>">Blog</a>
-            <a href="/produtos" class="link-underline <?= $path === '/produtos' ? 'text-accent' : '' ?>">Produtos</a>
+            <a href="/produtos" class="link-underline <?= $path === '/produtos' || str_starts_with($path, '/produto/') ? 'text-accent' : '' ?>">Produtos</a>
             <?php foreach (array_slice($categories, 0, 3) as $category): ?>
                 <a href="/blog?cat=<?= urlencode($category) ?>" class="link-underline text-foreground/80 hover:text-foreground"><?= h($category) ?></a>
             <?php endforeach; ?>

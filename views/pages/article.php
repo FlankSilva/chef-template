@@ -70,11 +70,12 @@ view('partials/header.php', ['path' => '/blog', 'categories' => $categories]);
                 <h2 class="mt-12">Veja os produtos avaliados</h2>
                 <div class="not-prose mt-6 space-y-8">
                     <?php foreach ($post['products'] as $index => $product): ?>
+                        <?php $detailHref = product_page_path((string) $post['slug'], (string) $product['slug']); ?>
                         <article class="relative rounded-2xl border border-border bg-card p-6 md:p-8 shadow-sm-soft">
                             <span class="absolute -top-4 left-6 grid h-10 w-10 place-items-center rounded-full bg-accent text-accent-foreground font-black text-base shadow-md-soft"><?= h((string) ((int) $index + 1)) ?>º</span>
-                            <h3 class="font-display font-bold text-xl md:text-2xl"><?= h((string) $product['name']) ?></h3>
+                            <h3 class="font-display font-bold text-xl md:text-2xl"><a href="<?= h($detailHref) ?>" class="hover:text-accent transition-colors"><?= h((string) $product['name']) ?></a></h3>
                             <p class="text-accent font-black text-2xl mt-2"><?= h((string) $product['price']) ?></p>
-                            <a href="<?= h((string) $product['affiliateUrl']) ?>" class="inline-flex mt-4 w-full items-center justify-center rounded-lg bg-gradient-accent px-6 py-3 font-bold text-accent-foreground">Ver oferta</a>
+                            <a href="<?= h($detailHref) ?>" class="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-gradient-accent px-6 py-3 font-bold text-accent-foreground shadow-md-soft hover:-translate-y-0.5 transition-transform">Ver produto</a>
                         </article>
                     <?php endforeach; ?>
                 </div>

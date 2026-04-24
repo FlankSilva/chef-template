@@ -31,8 +31,26 @@ $posts = [
             ['heading' => 'O que olhar antes de comprar', 'paragraphs' => ['Material da lâmina, tamanho, tipo de cabo e peso fazem toda a diferença no uso diário.']],
         ],
         'products' => [
-            ['name' => 'Tramontina Century 8"', 'price' => 'R$ 489', 'rating' => 4.8, 'pros' => ['Ótima retenção', 'Cabo ergonômico'], 'cons' => ['Mais pesada'], 'affiliateUrl' => '#'],
-            ['name' => 'Mundial Premium Forged', 'price' => 'R$ 329', 'rating' => 4.6, 'pros' => ['Bom equilíbrio', 'Ótimo custo-benefício'], 'cons' => ['Fio de fábrica mediano'], 'affiliateUrl' => '#'],
+            [
+                'slug' => 'tramontina-century-8',
+                'name' => 'Tramontina Century 8"',
+                'price' => 'R$ 489',
+                'rating' => 4.8,
+                'pros' => ['Ótima retenção', 'Cabo ergonômico'],
+                'cons' => ['Mais pesada'],
+                'affiliateUrl' => '#',
+                'description' => 'Faca de chef com aço de alto carbono e cabo ergonômico. Equilíbrio sólido para quem cozinha todos os dias e quer um fio que dura entre afiações.',
+            ],
+            [
+                'slug' => 'mundial-premium-forged',
+                'name' => 'Mundial Premium Forged',
+                'price' => 'R$ 329',
+                'rating' => 4.6,
+                'pros' => ['Bom equilíbrio', 'Ótimo custo-benefício'],
+                'cons' => ['Fio de fábrica mediano'],
+                'affiliateUrl' => '#',
+                'description' => 'Entrada excelente para quem está montando a bancada. Leve na mão e com bom custo-benefício para o dia a dia.',
+            ],
         ],
         'tags' => ['facas', 'chef', 'review'],
     ],
@@ -52,8 +70,26 @@ $posts = [
             ['heading' => 'Quando não compensa', 'paragraphs' => ['Se o uso for raro, uma batedeira comum pode atender melhor.']],
         ],
         'products' => [
-            ['name' => 'KitchenAid Artisan 4.8L', 'price' => 'R$ 4.299', 'rating' => 4.9, 'pros' => ['Construção em metal', 'Alta durabilidade'], 'cons' => ['Preço elevado'], 'affiliateUrl' => '#'],
-            ['name' => 'Mondial Premium Plus', 'price' => 'R$ 699', 'rating' => 4.3, 'pros' => ['Custo-benefício', 'Boa para uso ocasional'], 'cons' => ['Vibra em massas pesadas'], 'affiliateUrl' => '#'],
+            [
+                'slug' => 'kitchenaid-artisan-48l',
+                'name' => 'KitchenAid Artisan 4.8L',
+                'price' => 'R$ 4.299',
+                'rating' => 4.9,
+                'pros' => ['Construção em metal', 'Alta durabilidade'],
+                'cons' => ['Preço elevado'],
+                'affiliateUrl' => '#',
+                'description' => 'Referência em planetárias domésticas: motor robusto, acabamento premium e compatibilidade com acessórios. Ideal para quem assa com frequência.',
+            ],
+            [
+                'slug' => 'mondial-premium-plus',
+                'name' => 'Mondial Premium Plus',
+                'price' => 'R$ 699',
+                'rating' => 4.3,
+                'pros' => ['Custo-benefício', 'Boa para uso ocasional'],
+                'cons' => ['Vibra em massas pesadas'],
+                'affiliateUrl' => '#',
+                'description' => 'Opção acessível para receitas leves e uso moderado. Para massas muito pesadas, espere mais vibração na bancada.',
+            ],
         ],
         'tags' => ['batedeira', 'planetária', 'panificação'],
     ],
@@ -73,8 +109,26 @@ $posts = [
             ['heading' => 'O que esperar da faixa', 'paragraphs' => ['Na faixa de entrada, o desempenho costuma surpreender para o uso diário.']],
         ],
         'products' => [
-            ['name' => 'Mondial Family AF-31', 'price' => 'R$ 379', 'rating' => 4.5, 'pros' => ['4L de capacidade', 'Painel digital'], 'cons' => ['Manual simples'], 'affiliateUrl' => '#'],
-            ['name' => 'Philips Walita Daily', 'price' => 'R$ 499', 'rating' => 4.7, 'pros' => ['Silenciosa', 'Boa uniformidade'], 'cons' => ['Cesta menor'], 'affiliateUrl' => '#'],
+            [
+                'slug' => 'mondial-family-af-31',
+                'name' => 'Mondial Family AF-31',
+                'price' => 'R$ 379',
+                'rating' => 4.5,
+                'pros' => ['4L de capacidade', 'Painel digital'],
+                'cons' => ['Manual simples'],
+                'affiliateUrl' => '#',
+                'description' => 'Airfryer com boa capacidade para família e painel digital intuitivo. Performance sólida na faixa de até R$ 500.',
+            ],
+            [
+                'slug' => 'philips-walita-daily',
+                'name' => 'Philips Walita Daily',
+                'price' => 'R$ 499',
+                'rating' => 4.7,
+                'pros' => ['Silenciosa', 'Boa uniformidade'],
+                'cons' => ['Cesta menor'],
+                'affiliateUrl' => '#',
+                'description' => 'Tecnologia Rapid Air com operação silenciosa e resultado uniforme em porções menores.',
+            ],
         ],
         'tags' => ['airfryer', 'fritadeira', 'barato'],
     ],
@@ -105,9 +159,35 @@ function all_products(array $posts): array
         foreach ($postRow['products'] as $product) {
             $product['category'] = $postRow['category'];
             $product['postSlug'] = $postRow['slug'];
-            $product['image'] = $postRow['cover'];
+            $product['image'] = $product['image'] ?? $postRow['cover'];
             $all[] = $product;
         }
     }
     return $all;
+}
+
+/**
+ * @param list<array<string, mixed>> $posts
+ * @return array{post: array<string, mixed>, product: array<string, mixed>}|null
+ */
+function get_product_by_slugs(array $posts, string $postSlug, string $productSlug): ?array
+{
+    $post = get_post_by_slug($posts, $postSlug);
+    if ($post === null) {
+        return null;
+    }
+    foreach ($post['products'] as $product) {
+        if (($product['slug'] ?? '') === $productSlug) {
+            $product['category'] = $post['category'];
+            $product['postSlug'] = $post['slug'];
+            $product['image'] = $product['image'] ?? $post['cover'];
+            return ['post' => $post, 'product' => $product];
+        }
+    }
+    return null;
+}
+
+function product_page_path(string $postSlug, string $productSlug): string
+{
+    return '/produto/' . rawurlencode($postSlug) . '/' . rawurlencode($productSlug);
 }
