@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# Keep direct access to existing files and folders
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Route every other request to front controller
+RewriteRule ^ index.php [L,QSA]
